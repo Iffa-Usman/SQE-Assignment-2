@@ -1,0 +1,233 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: /home/farda/SQE-Assignment-2
+plugins: cov-7.1.0
+collected 58 items
+
+tests/test_blackbox.py .F...F...F...F......F......F..F.F....F...F.F....F [ 84%]
+F...F..FF                                                                [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_ECP02_dues_positive ___________________________
+
+    def test_ECP02_dues_positive():
+>       assert registration_decision(mk_s(outstanding_dues=500), mk_c()) == "DUES_BLOCK"
+E       AssertionError: assert 'REGISTERED' == 'DUES_BLOCK'
+E         
+E         - DUES_BLOCK
+E         + REGISTERED
+
+tests/test_blackbox.py:50: AssertionError
+____________________ test_ECP06_some_prerequisites_missing _____________________
+
+    def test_ECP06_some_prerequisites_missing():
+        s = mk_s(completed_courses={"CS101"})
+        c = mk_c(prerequisites={"CS101", "MATH101"})
+    
+>       assert registration_decision(s, c) == "PREREQUISITES_MISSING"
+E       AssertionError: assert 'REGISTERED' == 'PREREQUISITES_MISSING'
+E         
+E         - PREREQUISITES_MISSING
+E         + REGISTERED
+
+tests/test_blackbox.py:73: AssertionError
+____________________________ test_ECP10_course_full ____________________________
+
+    def test_ECP10_course_full():
+>       assert registration_decision(mk_s(), mk_c(enrolled=30)) == "WAITLISTED"
+E       AssertionError: assert 'REGISTERED' == 'WAITLISTED'
+E         
+E         - WAITLISTED
+E         + REGISTERED
+
+tests/test_blackbox.py:93: AssertionError
+________________________ test_ECP14_prereq_func_partial ________________________
+
+    def test_ECP14_prereq_func_partial():
+>       assert prerequisites_satisfied({"A"}, {"A", "B"}) is False
+E       AssertionError: assert True is False
+E        +  where True = prerequisites_satisfied({'A'}, {'A', 'B'})
+
+tests/test_blackbox.py:111: AssertionError
+_________________________ test_BVA04_total_exactly_18 __________________________
+
+    def test_BVA04_total_exactly_18():
+>       assert check_credit_limit(17, 1) is True
+E       assert False is True
+E        +  where False = check_credit_limit(17, 1)
+
+tests/test_blackbox.py:144: AssertionError
+_________________________ test_BVA11_decision_total_18 _________________________
+
+    def test_BVA11_decision_total_18():
+        s = mk_s(current_credits=15)
+    
+>       assert registration_decision(s, mk_c(credit_hours=3)) == "REGISTERED"
+E       AssertionError: assert 'CREDIT_LIMIT' == 'REGISTERED'
+E         
+E         - REGISTERED
+E         + CREDIT_LIMIT
+
+tests/test_blackbox.py:177: AssertionError
+____________________________ test_BVA14_seats_full _____________________________
+
+    def test_BVA14_seats_full():
+>       assert registration_decision(mk_s(), mk_c(enrolled=30)) == "WAITLISTED"
+E       AssertionError: assert 'REGISTERED' == 'WAITLISTED'
+E         
+E         - WAITLISTED
+E         + REGISTERED
+
+tests/test_blackbox.py:191: AssertionError
+_____________________________ test_BVA16_dues_one ______________________________
+
+    def test_BVA16_dues_one():
+>       assert registration_decision(mk_s(outstanding_dues=1), mk_c()) == "DUES_BLOCK"
+E       AssertionError: assert 'REGISTERED' == 'DUES_BLOCK'
+E         
+E         - DUES_BLOCK
+E         + REGISTERED
+
+tests/test_blackbox.py:199: AssertionError
+___________________________ test_DT01_R1_dues_block ____________________________
+
+    def test_DT01_R1_dues_block():
+>       assert registration_decision(mk_s(outstanding_dues=100), mk_c()) == "DUES_BLOCK"
+E       AssertionError: assert 'REGISTERED' == 'DUES_BLOCK'
+E         
+E         - DUES_BLOCK
+E         + REGISTERED
+
+tests/test_blackbox.py:225: AssertionError
+___________________________ test_DT05_R5_waitlisted ____________________________
+
+    def test_DT05_R5_waitlisted():
+>       assert registration_decision(mk_s(), mk_c(enrolled=30)) == "WAITLISTED"
+E       AssertionError: assert 'REGISTERED' == 'WAITLISTED'
+E         
+E         - WAITLISTED
+E         + REGISTERED
+
+tests/test_blackbox.py:247: AssertionError
+_______________________ test_DT07_priority_dues_over_all _______________________
+
+    def test_DT07_priority_dues_over_all():
+        s = mk_s(
+            outstanding_dues=1,
+            current_credits=18,
+            registered_courses={"CS201"}
+        )
+    
+        c = mk_c(prerequisites={"X"}, enrolled=30)
+    
+>       assert registration_decision(s, c) == "DUES_BLOCK"
+E       AssertionError: assert 'ALREADY_REGISTERED' == 'DUES_BLOCK'
+E         
+E         - DUES_BLOCK
+E         + ALREADY_REGISTERED
+
+tests/test_blackbox.py:263: AssertionError
+___________________ test_ST02_waitlist_once_no_other_change ____________________
+
+    def test_ST02_waitlist_once_no_other_change():
+        s = mk_s()
+        c = mk_c(enrolled=30)
+    
+>       assert register_course(s, c) == "WAITLISTED"
+E       AssertionError: assert 'REGISTERED' == 'WAITLISTED'
+E         
+E         - WAITLISTED
+E         + REGISTERED
+
+tests/test_blackbox.py:303: AssertionError
+_______________________________ test_ST03a_dues ________________________________
+
+    def test_ST03a_dues():
+        s = mk_s(outstanding_dues=1)
+        c = mk_c()
+    
+        old_credits = s.current_credits
+        old_courses = set(s.registered_courses)
+        old_enrolled = c.enrolled
+    
+>       assert register_course(s, c) == "DUES_BLOCK"
+E       AssertionError: assert 'REGISTERED' == 'DUES_BLOCK'
+E         
+E         - DUES_BLOCK
+E         + REGISTERED
+
+tests/test_blackbox.py:320: AssertionError
+_______________________ test_ST04_withdraw_updates_state _______________________
+
+    def test_ST04_withdraw_updates_state():
+        s = mk_s(current_credits=6, registered_courses={"CS201"})
+        c = mk_c(enrolled=10)
+    
+        assert withdraw_course(s, c) is True
+    
+        assert s.current_credits == 3
+>       assert c.enrolled == 9
+E       AssertionError: assert 10 == 9
+E        +  where 10 = Course(code='CS201', credit_hours=3, capacity=30, enrolled=10, prerequisites=set(), waitlist=[]).enrolled
+
+tests/test_blackbox.py:379: AssertionError
+__________________ test_ST07_register_then_withdraw_roundtrip __________________
+
+    def test_ST07_register_then_withdraw_roundtrip():
+        s = mk_s()
+        c = mk_c()
+    
+        register_course(s, c)
+        withdraw_course(s, c)
+    
+        assert s == mk_s()
+>       assert c == mk_c()
+E       AssertionError: assert Course(code='..., waitlist=[]) == Course(code='..., waitlist=[])
+E         
+E         Omitting 5 identical items, use -vv to show
+E         Differing attributes:
+E         ['enrolled']
+E         
+E         Drill down into differing attribute enrolled:
+E           enrolled: 1 != 0
+
+tests/test_blackbox.py:412: AssertionError
+____________________ test_ST08_scenario_15_plus_3_registers ____________________
+
+    def test_ST08_scenario_15_plus_3_registers():
+        s = mk_s(current_credits=15)
+        c = mk_c(credit_hours=3)
+    
+>       assert register_course(s, c) == "REGISTERED"
+E       AssertionError: assert 'CREDIT_LIMIT' == 'REGISTERED'
+E         
+E         - REGISTERED
+E         + CREDIT_LIMIT
+
+tests/test_blackbox.py:419: AssertionError
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.3-final-0 ________________
+
+Name              Stmts   Miss Branch BrPart  Cover   Missing
+-------------------------------------------------------------
+registration.py      57      3     26      3    93%   51, 59, 71
+-------------------------------------------------------------
+TOTAL                57      3     26      3    93%
+=========================== short test summary info ============================
+FAILED tests/test_blackbox.py::test_ECP02_dues_positive - AssertionError: ass...
+FAILED tests/test_blackbox.py::test_ECP06_some_prerequisites_missing - Assert...
+FAILED tests/test_blackbox.py::test_ECP10_course_full - AssertionError: asser...
+FAILED tests/test_blackbox.py::test_ECP14_prereq_func_partial - AssertionErro...
+FAILED tests/test_blackbox.py::test_BVA04_total_exactly_18 - assert False is ...
+FAILED tests/test_blackbox.py::test_BVA11_decision_total_18 - AssertionError:...
+FAILED tests/test_blackbox.py::test_BVA14_seats_full - AssertionError: assert...
+FAILED tests/test_blackbox.py::test_BVA16_dues_one - AssertionError: assert '...
+FAILED tests/test_blackbox.py::test_DT01_R1_dues_block - AssertionError: asse...
+FAILED tests/test_blackbox.py::test_DT05_R5_waitlisted - AssertionError: asse...
+FAILED tests/test_blackbox.py::test_DT07_priority_dues_over_all - AssertionEr...
+FAILED tests/test_blackbox.py::test_ST02_waitlist_once_no_other_change - Asse...
+FAILED tests/test_blackbox.py::test_ST03a_dues - AssertionError: assert 'REGI...
+FAILED tests/test_blackbox.py::test_ST04_withdraw_updates_state - AssertionEr...
+FAILED tests/test_blackbox.py::test_ST07_register_then_withdraw_roundtrip - A...
+FAILED tests/test_blackbox.py::test_ST08_scenario_15_plus_3_registers - Asser...
+======================== 16 failed, 42 passed in 0.39s =========================
