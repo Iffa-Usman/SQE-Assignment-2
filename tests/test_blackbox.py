@@ -1,4 +1,6 @@
-
+"""
+Expected values are derived from REQUIREMENTS.md.
+"""
 import pytest
 
 from registration import (
@@ -88,6 +90,10 @@ def test_ECP08_already_registered():
 def test_ECP09_seat_available():
     assert registration_decision(mk_s(), mk_c(enrolled=10)) == "REGISTERED"
 
+    # ECP10, BVA14 and DT05 share identical inputs:
+    # enrolled=30, capacity=30, and an eligible student.
+    # All preconditions and input values are identical,
+    # so these IDs map to one executed test case.
 
 def test_ECP10_course_full():
     assert registration_decision(mk_s(), mk_c(enrolled=30)) == "WAITLISTED"
@@ -97,6 +103,7 @@ def test_ECP11_invalid_course_credits():
     with pytest.raises(ValueError, match="Invalid course credits"):
         check_credit_limit(10, 5)
 
+    # Tests the capacity < 1 rule (FR-15).
 
 def test_ECP12_invalid_capacity():
     with pytest.raises(ValueError, match="Invalid capacity or enrollment"):
@@ -170,7 +177,7 @@ def test_BVA10_course_credits_above_max():
     with pytest.raises(ValueError, match="Invalid course credits"):
         check_credit_limit(5, 5)
 
-
+# Requirements: FR-01 and FR-07
 def test_BVA11_decision_total_18():
     s = mk_s(current_credits=15)
 
@@ -322,6 +329,7 @@ def test_ST03a_dues():
     assert s.current_credits == old_credits
     assert s.registered_courses == old_courses
     assert c.enrolled == old_enrolled
+    assert c.waitlist == []
 
 
 def test_ST03b_already():
@@ -337,6 +345,7 @@ def test_ST03b_already():
     assert s.current_credits == old_credits
     assert s.registered_courses == old_courses
     assert c.enrolled == old_enrolled
+    assert c.waitlist == []
 
 
 def test_ST03c_prereq():
@@ -352,6 +361,7 @@ def test_ST03c_prereq():
     assert s.current_credits == old_credits
     assert s.registered_courses == old_courses
     assert c.enrolled == old_enrolled
+    assert c.waitlist == []
 
 
 def test_ST03d_credit():
@@ -367,6 +377,7 @@ def test_ST03d_credit():
     assert s.current_credits == old_credits
     assert s.registered_courses == old_courses
     assert c.enrolled == old_enrolled
+    assert c.waitlist == []
 
 
 def test_ST04_withdraw_updates_state():
